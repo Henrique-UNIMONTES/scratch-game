@@ -1,3 +1,18 @@
+@font-face {
+    font-family: "Back to 1982";
+    src: url("./assets/font/BACKTO1982.TTF");
+}
+
+@font-face {
+    font-family: "Arcade Classic";
+    src: url("./assets/font/ARCADECLASSIC.TTF");
+}
+
+@font-face {
+    font-family: "Invasion 2000";
+    src: url("./assets/font/INVASION2000.TTF");
+}
+
 * {
     margin: 0;
     padding: 0;
