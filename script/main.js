@@ -184,8 +184,14 @@ function initCanvas(container = undefined, width = 300, height = 150) {
 const mouseEvents = {
     previousX: undefined,
     previousY: undefined,
+    touchTriggered: false,
 
     mouseDown(e) {
+        if (mouseEvents.touchTriggered) {
+            mouseEvents.touchTriggered = false;
+            return;
+        }
+
         if (activeScreen.game_running) return;
 
         activeScreen.objects.forEach(obj => {
@@ -247,7 +253,6 @@ const mouseEvents = {
 
         activeScreen.objects.forEach(obj => {
             obj.pressed = false;
-            obj.state = 'normal';
 
             if (obj.name.includes('loop_block-')) {
                 obj.firstDrag = true;
@@ -256,13 +261,21 @@ const mouseEvents = {
     },
 
     touchDown(e) {
+        mouseEvents.touchTriggered = true;
+
         if (activeScreen.game_running) return;
+        const x = e.changedTouches['0'].clientX - getOffset(canvas).left;
+        const y = e.changedTouches['0'].clientY - getOffset(canvas).top;
+
+        if (!this.previousX) this.previousX = x;
+        if (!this.previousY) this.previousY = y;
 
         activeScreen.objects.forEach(obj => {
-            if (obj.state == 'hover') {
+            if (x >= obj.x() && y >= obj.y() && x <= obj.x() + obj.width() && y <= obj.y() + obj.height()) {
+                obj.state = 'hover';
                 obj.pressed = true;
                 if (obj.hasClick) obj.onclick();
-            }
+            } else obj.state = 'normal';
         });
 
         this.previousX = e.changedTouches['0'].clientX - getOffset(canvas).left;
@@ -273,9 +286,6 @@ const mouseEvents = {
         if (activeScreen.game_running) return;
         const x = e.changedTouches['0'].clientX - getOffset(canvas).left;
         const y = e.changedTouches['0'].clientY - getOffset(canvas).top;
-
-        if (!this.previousX) this.previousX = x;
-        if (!this.previousY) this.previousY = y;
 
         let changeObjPos = undefined;
 
@@ -317,6 +327,7 @@ const mouseEvents = {
 
         activeScreen.objects.forEach(obj => {
             obj.pressed = false;
+            if (obj.type != 'block') obj.state = 'normal';
 
             if (obj.name.includes('loop_block-')) {
                 obj.firstDrag = true;
@@ -924,10 +935,10 @@ const screens = {
 
                                     if (this.hasBeenDraggable && !this.pressed) {
                                         const grid = activeScreen.getObject("grid");
+
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
                                             this.resetPosition();
                                         }
 
@@ -983,6 +994,7 @@ const screens = {
 
                                         if (obj.type == "block") {
                                             if (obj.state == "hover" && obj.name != this.name) {
+                                                obj.state = 'normal';
                                                 res = obj.name;
                                             }
                                         }
