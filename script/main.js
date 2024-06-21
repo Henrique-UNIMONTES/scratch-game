@@ -2249,11 +2249,16 @@ const screens = {
 
                     this.itensBuffer = [];
 
+                    this.movement = {
+                        has: false,
+                        fun: null
+                    }
+
                     this.update = function() {
                         if (activeScreen.passForward == 1) {
                             try {
-                                let numX = Math.floor(this.stateCord.x);
-                                let numY = Math.floor(this.stateCord.y);
+                                let numX = Math.round(this.stateCord.x);
+                                let numY = Math.round(this.stateCord.y);
 
                                 if (this.stateCord.direction == 'L') {
                                     numX -= 0;
@@ -2304,56 +2309,76 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                            
-                            switch (this.animState) {
-                                case 'idle': {
-                                    break;
-                                }
-
-                                case 'walk': {
-                                    switch (this.stateCord.direction) {
-                                        case 'N': {
-                                            if (this.stateCord.y > 1) {
-                                                if (activeScreen.level.paths[this.stateCord.y - 1].charAt(this.stateCord.x - 1) == '#') {
-                                                    this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
-                                                }
-                                            }
-                                            
-                                            break;
-                                        }
-
-                                        case 'L': {
-                                            if (this.stateCord.x < activeScreen.level.columns) {
-                                                if (activeScreen.level.paths[this.stateCord.y - 1].charAt(this.stateCord.x - 1) == '#') {
-                                                    this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
-                                                }
-                                            }
-
-                                            break;
-                                        }
-                                        case 'S': {
-                                            if (this.stateCord.y < activeScreen.level.lines) {
-                                                if (activeScreen.level.paths[this.stateCord.y - 1].charAt(this.stateCord.x - 1) == '#') {
-                                                    this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
-                                                }
-                                            }
-
-                                            break;
-                                        }
-                                        case 'O': {
-                                            if (this.stateCord.x > 1) {
-                                                if (activeScreen.level.paths[this.stateCord.y - 1].charAt(this.stateCord.x - 1) == '#') {
-                                                    this.stateCord.x -= 1 / (60 / this.statesMap[this.animState].vel);
-                                                }
-                                            }
-
-                                            break;
-                                        }
+                        
+                            if (this.movement.has) this.movement.fun();
+                            else
+                                switch (this.animState) {
+                                    case 'idle': {
+                                        break;
                                     }
-                                    
-                                    break;
+
+                                    case 'walk': {
+                                        switch (this.stateCord.direction) {
+                                            case 'N': {
+                                                if (this.stateCord.y > 1) {
+                                                    if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
+                                                        this.movement.has = true;
+                                                        this.movement.fun = function() { 
+                                                            const player = activeScreen.getObject('player');
+                                                            player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
+                                                        this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
+                                                    }
+                                                }
+                                                
+                                                break;
+                                            }
+
+                                            case 'L': {
+                                                if (this.stateCord.x < activeScreen.level.columns) {
+                                                    if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
+                                                        this.movement.has = true;
+                                                        this.movement.fun = function() { 
+                                                            const player = activeScreen.getObject('player');
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                        }
+                                                        this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
+                                                    }
+                                                }
+
+                                                break;
+                                            }
+                                            case 'S': {
+                                                if (this.stateCord.y < activeScreen.level.lines) {
+                                                    if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
+                                                        this.movement.has = true;
+                                                        this.movement.fun = function() { 
+                                                            const player = activeScreen.getObject('player');
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                        }
+                                                        this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
+                                                    }
+                                                }
+
+                                                break;
+                                            }
+                                            case 'O': {
+                                                if (this.stateCord.x > 1) {
+                                                    if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x - 2)) == '#') {
+                                                        this.movement.has = true;
+                                                        this.movement.fun = function() {
+                                                            const player = activeScreen.getObject('player');
+                                                            player.stateCord.x -= 1 / (60 / player.statesMap[player.animState].vel); }
+                                                        this.stateCord.x -= 1 / (60 / this.statesMap[this.animState].vel);
+                                                    }
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        
+                                        break;
+                                    }
                                 }
-                            }
 
                             this.animTemp = 0;
                         }
@@ -2403,6 +2428,7 @@ const screens = {
                 if (this.passForward > 0) this.passForward--;
 
                 if (this.counter % 60 * 5 == 0) {
+                    player.movement.has = false;
 
                     player.changeState = {
                         new: 'idle',
@@ -2539,7 +2565,7 @@ const screens = {
 
                 columns: 3,
                 lines: 3,
-                quantItens: 10,
+                quantItens: 7,
             },
 
             onload: true,
