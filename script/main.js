@@ -1,14 +1,8 @@
-let windowWidth, windowHeight;
-
-if (9 / 16 * window.innerWidth > window.innerHeight) {
-    windowHeight = window.innerHeight;
-    windowWidth = 16 / 9 * window.innerHeight;
-}
-
-else {
-    windowWidth = window.innerWidth;
-    windowHeight = 9 / 16 * window.innerWidth;
-}
+const devicePixelRatio = window.devicePixelRatio || 1;
+let [windowWidth, windowHeight] = [
+    window.innerWidth * devicePixelRatio,
+    window.innerHeight * devicePixelRatio,
+];
 
 const [ canvas, ctx ] = initCanvas(undefined, windowWidth, windowHeight);
 let activeScreen = {};
@@ -378,15 +372,10 @@ function hasColision(obj1, obj2) {
 }
 
 function resizeViewPort(e) {
-    if (9 / 16 * e.target.innerWidth > e.target.innerHeight) {
-        windowHeight = e.target.innerHeight;
-        windowWidth = 16 / 9 * e.target.innerHeight;
-    }
-    
-    else {
-        windowWidth = e.target.innerWidth;
-        windowHeight = 9 / 16 * e.target.innerWidth;
-    }
+    [windowWidth, windowHeight] = [
+        window.innerWidth * devicePixelRatio,
+        window.innerHeight * devicePixelRatio,
+    ];
 
     canvas.width = windowWidth;
     canvas.height = windowHeight;
@@ -473,7 +462,7 @@ class RenderObject {
                     ctx.fill();
                     ctx.closePath();
                 }
-                
+
                 else {
                     ctx.fillStyle = colorSchema[this.fillColor][this.active ? 'hover' : (this.hasHover ? this.state : 'normal')];
                     ctx.fillRect(this.x(), this.y(), this.width(), this.height());
@@ -490,7 +479,7 @@ class RenderObject {
                     ctx.stroke();
                     ctx.closePath();
                 }
-                
+
                 else {
                     ctx.strokeStyle = colorSchema[this.strokeColor][this.hasHover ? this.state : 'normal'];
                     ctx.strokeRect(this.x(), this.y(), this.width(), this.height());
@@ -544,7 +533,7 @@ const screens = {
         update() {
             if (this.onload) {
                 this.objects.push(
-                    new RenderObject("title", "interface", null, null, null, null, null, null, null, 0, "UNIOPEN", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.title.font, fonts.title.size, false, false, false, false, false, true),
+                    new RenderObject("title", "interface", null, null, null, null, null, null, null, 0, "UniVerse", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.title.font, fonts.title.size, false, false, false, false, false, true),
                     new RenderObject("sub_title", "interface", null, null, null, null, null, null, null, 0, "LOGICA DE PROGRAMACAO", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.sub_title.font, fonts.sub_title.size, false, false, false, false, false, true),
                     new RenderObject("uni_logo", "interface", null, null, null, null, null, null, null, 0, null, null, null, null, null, null, null, false, false, false, false, false, false, "./assets/image/unimontes.png", null, true),
                     new RenderObject("play_button", "interface", null, null, null, null, null, null, null, 0, "JOGAR", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.text.font, fonts.text.size, false, true, true, false, false, true, "./assets/image/menu/play_button.png", "./assets/image/menu/play_button-hover.png", true),
@@ -560,7 +549,7 @@ const screens = {
                     this.height = this.width;
                     this.borderRadius = this.width;
                 }
-                
+
                 const sub_title = this.getObject("sub_title");
                 sub_title.init = function() {
                     this.x = function() { return canvas.width / 2; };
@@ -638,7 +627,7 @@ const screens = {
         destroyObject(name) {
             const pos = this.objPosition[name];
             const aux = [];
-            
+
             this.objects.forEach((obj, index) => {
                 if (index != pos) aux.push(obj);
             });
@@ -746,7 +735,7 @@ const screens = {
                     this.sprWidth = this.width;
                     this.sprHeight = this.height;
                 };
-                
+
                 this.objects[this.objects.length - 2].init = function() {
                     this.spriteX = 0;
                     this.spriteY = 0;
@@ -946,7 +935,7 @@ const screens = {
 
                         this.onclick = function() {
                             if (!this.disabled) return;
-                            changeScreen(screens.levels["level_" + (this.index + 1)]);                        
+                            changeScreen(screens.levels["level_" + (this.index + 1)]);
                         }
                     }
                 }
@@ -960,7 +949,7 @@ const screens = {
                 this.onload = false;
             }
         },
-        
+
         background: {
             image: new Image(),
             imageSrc: "./assets/image/background.png",
@@ -1110,7 +1099,7 @@ const screens = {
                         this.spriteY = 0;
                         this.spriteWidth = 1285;
                         this.spriteHeight = 252;
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -1159,8 +1148,8 @@ const screens = {
                             if (this.checkBlocks()) {
                                 this.state = 'normal';
                                 activeScreen.game_running = true;
-                            } 
-                            
+                            }
+
                             else { alert("Não coloque dois blocos de repetição entrelaçados!\nColoque o bloco de abertura e de fechamento na mesma região"); }
                         }
 
@@ -1191,7 +1180,7 @@ const screens = {
 
                             return res;
                         }
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -1228,7 +1217,7 @@ const screens = {
 
                         this.placeInGrid = function() {
                             const grid = activeScreen.getObject("grid");
-                            
+
                             let num = 0;
                             Object.keys(grid.itens.all).forEach(key => {
                                 if (key.includes("forward") && key.length > this.name.length) num = Math.max(num, Number(key.split("-")[1]));
@@ -1236,17 +1225,17 @@ const screens = {
 
                             const objName = this.name + '-' + (num + 1);
                             const objPos = activeScreen.objPosition[this.name];
-                            
+
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, this.text, this.textColor, this.textAlign, this.textVerticalAlign, this.textPosition, this.font, this.fontSize, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "forward",
                                 index: Object.keys(grid.itens.all).length
@@ -1284,16 +1273,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -1327,7 +1316,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -1390,7 +1379,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -1439,13 +1428,13 @@ const screens = {
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, this.hasImage)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "turn",
                                 index: Object.keys(grid.itens.all).length
@@ -1483,16 +1472,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -1512,7 +1501,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -1526,7 +1515,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -1588,7 +1577,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -1638,14 +1627,14 @@ const screens = {
                                 new RenderObject(objName + (num + 1), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true),
                                 new RenderObject(objName + (num + 2), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, "", "branco", null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key] += 2;
                             });
 
                             activeScreen.objPosition[objName + (num + 1)] = objPos;
                             activeScreen.objPosition[objName + (num + 2)] = objPos + 1;
-                            
+
                             grid.itens.all[objName + (num + 1)] = {
                                 type: "loop",
                                 index: Object.keys(grid.itens.all).length
@@ -1672,7 +1661,7 @@ const screens = {
 
                                 this.renderAux = function() {
                                     const grid = activeScreen.getObject("grid");
-                                    
+
                                     try {
                                         if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
                                     }
@@ -1714,16 +1703,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -1743,7 +1732,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -1824,7 +1813,7 @@ const screens = {
                                 this.onclick = function() {
                                     const grid = activeScreen.getObject("grid");
                                     if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
-                    
+
                                     if (this.loop_count < 10) this.loop_count++;
                                     else this.loop_count = 2;
 
@@ -1849,7 +1838,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -1966,7 +1955,7 @@ const screens = {
                 };
 
                 level_frame.init();
-                
+
                 let blocks = [];
 
                 this.level.paths.forEach((line, index) => {
@@ -2014,7 +2003,7 @@ const screens = {
                                     };
 
                                     this.width = this.height;
-                                    
+
                                     this.sprX = this.x;
                                     this.sprY = this.y;
                                     this.sprWidth = this.width;
@@ -2097,7 +2086,7 @@ const screens = {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.x() + (tmp.width() - this.width()) / 2;
                                 }
-                                
+
                                 this.y = function() {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.y() + (tmp.height() - this.height()) / 2;
@@ -2229,7 +2218,7 @@ const screens = {
                                     y: 102
                                 }
                             },
-                            
+
                             width: 15,
                             height: 22,
                             offset: 1,
@@ -2247,7 +2236,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = [];
+                    this.itensBuffer = new Set();
 
                     this.movement = {
                         has: false,
@@ -2279,16 +2268,16 @@ const screens = {
 
                                 const i = activeScreen.getObject("item-" + (numY * activeScreen.level.columns + numX));
                                 i.active = false;
-                                this.itensCollected++;
-                                this.itensBuffer.push(i.name);
+                                this.itensBuffer.add(i.name);
+                                this.itensCollected = this.itensBuffer.length;
                             }
 
                             catch { }
                         }
 
                         if (this.changeState.ready) {
-                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x; 
-                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y; 
+                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x;
+                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y;
                             this.spriteWidth = this.statesMap[this.changeState.new].width;
                             this.spriteHeight = this.statesMap[this.changeState.new].height;
                             this.stateCord.x = Math.round(this.stateCord.x);
@@ -2309,7 +2298,7 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                        
+
                             if (this.movement.has) this.movement.fun();
                             else
                                 switch (this.animState) {
@@ -2323,13 +2312,13 @@ const screens = {
                                                 if (this.stateCord.y > 1) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
                                                             player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
                                                         this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
                                                 }
-                                                
+
                                                 break;
                                             }
 
@@ -2337,9 +2326,9 @@ const screens = {
                                                 if (this.stateCord.x < activeScreen.level.columns) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -2351,9 +2340,9 @@ const screens = {
                                                 if (this.stateCord.y < activeScreen.level.lines) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -2375,7 +2364,7 @@ const screens = {
                                                 break;
                                             }
                                         }
-                                        
+
                                         break;
                                     }
                                 }
@@ -2403,7 +2392,7 @@ const screens = {
             destroyObject(name) {
                 const pos = this.objPosition[name];
                 const aux = [];
-                
+
                 this.objects.forEach((obj, index) => {
                     if (index != pos) aux.push(obj);
                 });
@@ -2460,7 +2449,7 @@ const screens = {
                                     new: 'walk',
                                     ready: true
                                 }
-                                
+
                                 break;
                             }
 
@@ -2535,7 +2524,7 @@ const screens = {
                 this.counter++;
             }
         },
-        
+
         level_2: {
             label: "level_2",
             level: {
@@ -2677,7 +2666,7 @@ const screens = {
                         this.spriteY = 0;
                         this.spriteWidth = 1285;
                         this.spriteHeight = 252;
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -2726,8 +2715,8 @@ const screens = {
                             if (this.checkBlocks()) {
                                 this.state = 'normal';
                                 activeScreen.game_running = true;
-                            } 
-                            
+                            }
+
                             else { alert("Não coloque dois blocos de repetição entrelaçados!\nColoque o bloco de abertura e de fechamento na mesma região"); }
                         }
 
@@ -2758,7 +2747,7 @@ const screens = {
 
                             return res;
                         }
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -2795,7 +2784,7 @@ const screens = {
 
                         this.placeInGrid = function() {
                             const grid = activeScreen.getObject("grid");
-                            
+
                             let num = 0;
                             Object.keys(grid.itens.all).forEach(key => {
                                 if (key.includes("forward") && key.length > this.name.length) num = Math.max(num, Number(key.split("-")[1]));
@@ -2803,17 +2792,17 @@ const screens = {
 
                             const objName = this.name + '-' + (num + 1);
                             const objPos = activeScreen.objPosition[this.name];
-                            
+
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, this.text, this.textColor, this.textAlign, this.textVerticalAlign, this.textPosition, this.font, this.fontSize, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "forward",
                                 index: Object.keys(grid.itens.all).length
@@ -2851,16 +2840,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -2894,7 +2883,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -2957,7 +2946,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -3006,13 +2995,13 @@ const screens = {
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, this.hasImage)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "turn",
                                 index: Object.keys(grid.itens.all).length
@@ -3050,16 +3039,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -3079,7 +3068,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -3093,7 +3082,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -3155,7 +3144,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -3205,14 +3194,14 @@ const screens = {
                                 new RenderObject(objName + (num + 1), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true),
                                 new RenderObject(objName + (num + 2), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, "", "branco", null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key] += 2;
                             });
 
                             activeScreen.objPosition[objName + (num + 1)] = objPos;
                             activeScreen.objPosition[objName + (num + 2)] = objPos + 1;
-                            
+
                             grid.itens.all[objName + (num + 1)] = {
                                 type: "loop",
                                 index: Object.keys(grid.itens.all).length
@@ -3239,7 +3228,7 @@ const screens = {
 
                                 this.renderAux = function() {
                                     const grid = activeScreen.getObject("grid");
-                                    
+
                                     try {
                                         if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
                                     }
@@ -3281,16 +3270,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -3310,7 +3299,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -3391,7 +3380,7 @@ const screens = {
                                 this.onclick = function() {
                                     const grid = activeScreen.getObject("grid");
                                     if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
-                    
+
                                     if (this.loop_count < 10) this.loop_count++;
                                     else this.loop_count = 2;
 
@@ -3416,7 +3405,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -3533,7 +3522,7 @@ const screens = {
                 };
 
                 level_frame.init();
-                
+
                 let blocks = [];
 
                 this.level.paths.forEach((line, index) => {
@@ -3581,7 +3570,7 @@ const screens = {
                                     };
 
                                     this.width = this.height;
-                                    
+
                                     this.sprX = this.x;
                                     this.sprY = this.y;
                                     this.sprWidth = this.width;
@@ -3664,7 +3653,7 @@ const screens = {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.columns * index + i));
                                     return tmp.x() + (tmp.width() - this.width()) / 2;
                                 }
-                                
+
                                 this.y = function() {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.columns * index + i));
                                     return tmp.y() + (tmp.height() - this.height()) / 2;
@@ -3796,7 +3785,7 @@ const screens = {
                                     y: 102
                                 }
                             },
-                            
+
                             width: 15,
                             height: 22,
                             offset: 1,
@@ -3814,7 +3803,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = [];
+                    this.itensBuffer = new Set();
 
                     this.movement = {
                         has: false,
@@ -3846,16 +3835,16 @@ const screens = {
 
                                 const i = activeScreen.getObject("item-" + (numY * activeScreen.level.columns + numX));
                                 i.active = false;
-                                this.itensCollected++;
-                                this.itensBuffer.push(i.name);
+                                this.itensBuffer.add(i.name);
+                                this.itensCollected =  this.itensBuffer.length;
                             }
 
                             catch { }
                         }
 
                         if (this.changeState.ready) {
-                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x; 
-                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y; 
+                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x;
+                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y;
                             this.spriteWidth = this.statesMap[this.changeState.new].width;
                             this.spriteHeight = this.statesMap[this.changeState.new].height;
                             this.stateCord.x = Math.round(this.stateCord.x);
@@ -3876,7 +3865,7 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                        
+
                             if (this.movement.has) this.movement.fun();
                             else
                                 switch (this.animState) {
@@ -3890,13 +3879,13 @@ const screens = {
                                                 if (this.stateCord.y > 1) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
                                                             player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
                                                         this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
                                                 }
-                                                
+
                                                 break;
                                             }
 
@@ -3904,9 +3893,9 @@ const screens = {
                                                 if (this.stateCord.x < activeScreen.level.columns) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -3918,9 +3907,9 @@ const screens = {
                                                 if (this.stateCord.y < activeScreen.level.lines) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -3942,7 +3931,7 @@ const screens = {
                                                 break;
                                             }
                                         }
-                                        
+
                                         break;
                                     }
                                 }
@@ -3970,7 +3959,7 @@ const screens = {
             destroyObject(name) {
                 const pos = this.objPosition[name];
                 const aux = [];
-                
+
                 this.objects.forEach((obj, index) => {
                     if (index != pos) aux.push(obj);
                 });
@@ -4026,7 +4015,7 @@ const screens = {
                                     new: 'walk',
                                     ready: true
                                 }
-                                
+
                                 break;
                             }
 
@@ -4249,7 +4238,7 @@ const screens = {
                         this.spriteY = 0;
                         this.spriteWidth = 1285;
                         this.spriteHeight = 252;
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -4298,8 +4287,8 @@ const screens = {
                             if (this.checkBlocks()) {
                                 this.state = 'normal';
                                 activeScreen.game_running = true;
-                            } 
-                            
+                            }
+
                             else { alert("Não coloque dois blocos de repetição entrelaçados!\nColoque o bloco de abertura e de fechamento na mesma região"); }
                         }
 
@@ -4330,7 +4319,7 @@ const screens = {
 
                             return res;
                         }
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -4367,7 +4356,7 @@ const screens = {
 
                         this.placeInGrid = function() {
                             const grid = activeScreen.getObject("grid");
-                            
+
                             let num = 0;
                             Object.keys(grid.itens.all).forEach(key => {
                                 if (key.includes("forward") && key.length > this.name.length) num = Math.max(num, Number(key.split("-")[1]));
@@ -4375,17 +4364,17 @@ const screens = {
 
                             const objName = this.name + '-' + (num + 1);
                             const objPos = activeScreen.objPosition[this.name];
-                            
+
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, this.text, this.textColor, this.textAlign, this.textVerticalAlign, this.textPosition, this.font, this.fontSize, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "forward",
                                 index: Object.keys(grid.itens.all).length
@@ -4423,16 +4412,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -4466,7 +4455,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -4529,7 +4518,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -4578,13 +4567,13 @@ const screens = {
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, this.hasImage)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "turn",
                                 index: Object.keys(grid.itens.all).length
@@ -4622,16 +4611,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -4651,7 +4640,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -4665,7 +4654,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -4727,7 +4716,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -4777,14 +4766,14 @@ const screens = {
                                 new RenderObject(objName + (num + 1), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true),
                                 new RenderObject(objName + (num + 2), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, "", "branco", null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key] += 2;
                             });
 
                             activeScreen.objPosition[objName + (num + 1)] = objPos;
                             activeScreen.objPosition[objName + (num + 2)] = objPos + 1;
-                            
+
                             grid.itens.all[objName + (num + 1)] = {
                                 type: "loop",
                                 index: Object.keys(grid.itens.all).length
@@ -4811,7 +4800,7 @@ const screens = {
 
                                 this.renderAux = function() {
                                     const grid = activeScreen.getObject("grid");
-                                    
+
                                     try {
                                         if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
                                     }
@@ -4853,16 +4842,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -4882,7 +4871,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -4963,7 +4952,7 @@ const screens = {
                                 this.onclick = function() {
                                     const grid = activeScreen.getObject("grid");
                                     if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
-                    
+
                                     if (this.loop_count < 10) this.loop_count++;
                                     else this.loop_count = 2;
 
@@ -4988,7 +4977,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -5105,7 +5094,7 @@ const screens = {
                 };
 
                 level_frame.init();
-                
+
                 let blocks = [];
 
                 this.level.paths.forEach((line, index) => {
@@ -5153,7 +5142,7 @@ const screens = {
                                     };
 
                                     this.width = this.height;
-                                    
+
                                     this.sprX = this.x;
                                     this.sprY = this.y;
                                     this.sprWidth = this.width;
@@ -5236,7 +5225,7 @@ const screens = {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.x() + (tmp.width() - this.width()) / 2;
                                 }
-                                
+
                                 this.y = function() {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.y() + (tmp.height() - this.height()) / 2;
@@ -5368,7 +5357,7 @@ const screens = {
                                     y: 102
                                 }
                             },
-                            
+
                             width: 15,
                             height: 22,
                             offset: 1,
@@ -5386,7 +5375,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = [];
+                    this.itensBuffer = new Set();
 
                     this.movement = {
                         has: false,
@@ -5425,8 +5414,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
-                                    this.itensCollected++;
-                                    this.itensBuffer.push(i.name);
+                                    this.itensBuffer.add(i.name);
+                                    this.itensCollected = this.itensBuffer.length;
                                 }
                             }
 
@@ -5434,8 +5423,8 @@ const screens = {
                         }
 
                         if (this.changeState.ready) {
-                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x; 
-                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y; 
+                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x;
+                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y;
                             this.spriteWidth = this.statesMap[this.changeState.new].width;
                             this.spriteHeight = this.statesMap[this.changeState.new].height;
                             this.stateCord.x = Math.round(this.stateCord.x);
@@ -5456,7 +5445,7 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                        
+
                             if (this.movement.has) this.movement.fun();
                             else
                                 switch (this.animState) {
@@ -5470,13 +5459,13 @@ const screens = {
                                                 if (this.stateCord.y > 1) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
                                                             player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
                                                         this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
                                                 }
-                                                
+
                                                 break;
                                             }
 
@@ -5484,9 +5473,9 @@ const screens = {
                                                 if (this.stateCord.x < activeScreen.level.columns) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -5498,9 +5487,9 @@ const screens = {
                                                 if (this.stateCord.y < activeScreen.level.lines) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -5522,7 +5511,7 @@ const screens = {
                                                 break;
                                             }
                                         }
-                                        
+
                                         break;
                                     }
                                 }
@@ -5550,7 +5539,7 @@ const screens = {
             destroyObject(name) {
                 const pos = this.objPosition[name];
                 const aux = [];
-                
+
                 this.objects.forEach((obj, index) => {
                     if (index != pos) aux.push(obj);
                 });
@@ -5606,7 +5595,7 @@ const screens = {
                                     new: 'walk',
                                     ready: true
                                 }
-                                
+
                                 break;
                             }
 
@@ -5669,7 +5658,7 @@ const screens = {
                     player.itensBuffer.forEach(item => {
                         this.getObject(item).active = true;
                     });
-                    
+
                     player.itensBuffer = [];
 
                     if (player.itensCollected == activeScreen.level.quantItens) {
@@ -5831,7 +5820,7 @@ const screens = {
                         this.spriteY = 0;
                         this.spriteWidth = 1285;
                         this.spriteHeight = 252;
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -5880,8 +5869,8 @@ const screens = {
                             if (this.checkBlocks()) {
                                 this.state = 'normal';
                                 activeScreen.game_running = true;
-                            } 
-                            
+                            }
+
                             else { alert("Não coloque dois blocos de repetição entrelaçados!\nColoque o bloco de abertura e de fechamento na mesma região"); }
                         }
 
@@ -5912,7 +5901,7 @@ const screens = {
 
                             return res;
                         }
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -5949,7 +5938,7 @@ const screens = {
 
                         this.placeInGrid = function() {
                             const grid = activeScreen.getObject("grid");
-                            
+
                             let num = 0;
                             Object.keys(grid.itens.all).forEach(key => {
                                 if (key.includes("forward") && key.length > this.name.length) num = Math.max(num, Number(key.split("-")[1]));
@@ -5957,17 +5946,17 @@ const screens = {
 
                             const objName = this.name + '-' + (num + 1);
                             const objPos = activeScreen.objPosition[this.name];
-                            
+
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, this.text, this.textColor, this.textAlign, this.textVerticalAlign, this.textPosition, this.font, this.fontSize, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "forward",
                                 index: Object.keys(grid.itens.all).length
@@ -6005,16 +5994,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -6048,7 +6037,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -6111,7 +6100,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -6160,13 +6149,13 @@ const screens = {
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, this.hasImage)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "turn",
                                 index: Object.keys(grid.itens.all).length
@@ -6204,16 +6193,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -6233,7 +6222,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -6247,7 +6236,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -6309,7 +6298,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -6359,14 +6348,14 @@ const screens = {
                                 new RenderObject(objName + (num + 1), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true),
                                 new RenderObject(objName + (num + 2), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, "", "branco", null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key] += 2;
                             });
 
                             activeScreen.objPosition[objName + (num + 1)] = objPos;
                             activeScreen.objPosition[objName + (num + 2)] = objPos + 1;
-                            
+
                             grid.itens.all[objName + (num + 1)] = {
                                 type: "loop",
                                 index: Object.keys(grid.itens.all).length
@@ -6393,7 +6382,7 @@ const screens = {
 
                                 this.renderAux = function() {
                                     const grid = activeScreen.getObject("grid");
-                                    
+
                                     try {
                                         if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
                                     }
@@ -6435,16 +6424,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -6464,7 +6453,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -6545,7 +6534,7 @@ const screens = {
                                 this.onclick = function() {
                                     const grid = activeScreen.getObject("grid");
                                     if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
-                    
+
                                     if (this.loop_count < 10) this.loop_count++;
                                     else this.loop_count = 2;
 
@@ -6570,7 +6559,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -6687,7 +6676,7 @@ const screens = {
                 };
 
                 level_frame.init();
-                
+
                 let blocks = [];
 
                 this.level.paths.forEach((line, index) => {
@@ -6735,7 +6724,7 @@ const screens = {
                                     };
 
                                     this.width = this.height;
-                                    
+
                                     this.sprX = this.x;
                                     this.sprY = this.y;
                                     this.sprWidth = this.width;
@@ -6818,7 +6807,7 @@ const screens = {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.x() + (tmp.width() - this.width()) / 2;
                                 }
-                                
+
                                 this.y = function() {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.y() + (tmp.height() - this.height()) / 2;
@@ -6950,7 +6939,7 @@ const screens = {
                                     y: 102
                                 }
                             },
-                            
+
                             width: 15,
                             height: 22,
                             offset: 1,
@@ -6968,7 +6957,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = [];
+                    this.itensBuffer = new Set();
 
                     this.movement = {
                         has: false,
@@ -7007,8 +6996,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
-                                    this.itensCollected++;
                                     this.itensBuffer.push(i.name);
+                                    this.itensCollected = this.itensBuffer.length;
                                 }
                             }
 
@@ -7016,8 +7005,8 @@ const screens = {
                         }
 
                         if (this.changeState.ready) {
-                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x; 
-                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y; 
+                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x;
+                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y;
                             this.spriteWidth = this.statesMap[this.changeState.new].width;
                             this.spriteHeight = this.statesMap[this.changeState.new].height;
                             this.stateCord.x = Math.round(this.stateCord.x);
@@ -7038,7 +7027,7 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                        
+
                             if (this.movement.has) this.movement.fun();
                             else
                                 switch (this.animState) {
@@ -7052,13 +7041,13 @@ const screens = {
                                                 if (this.stateCord.y > 1) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
                                                             player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
                                                         this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
                                                 }
-                                                
+
                                                 break;
                                             }
 
@@ -7066,9 +7055,9 @@ const screens = {
                                                 if (this.stateCord.x < activeScreen.level.columns) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -7080,9 +7069,9 @@ const screens = {
                                                 if (this.stateCord.y < activeScreen.level.lines) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -7104,7 +7093,7 @@ const screens = {
                                                 break;
                                             }
                                         }
-                                        
+
                                         break;
                                     }
                                 }
@@ -7132,7 +7121,7 @@ const screens = {
             destroyObject(name) {
                 const pos = this.objPosition[name];
                 const aux = [];
-                
+
                 this.objects.forEach((obj, index) => {
                     if (index != pos) aux.push(obj);
                 });
@@ -7188,7 +7177,7 @@ const screens = {
                                     new: 'walk',
                                     ready: true
                                 }
-                                
+
                                 break;
                             }
 
@@ -7251,7 +7240,7 @@ const screens = {
                     player.itensBuffer.forEach(item => {
                         this.getObject(item).active = true;
                     });
-                    
+
                     player.itensBuffer = [];
 
                     if (player.itensCollected == activeScreen.level.quantItens) {
@@ -7413,7 +7402,7 @@ const screens = {
                         this.spriteY = 0;
                         this.spriteWidth = 1285;
                         this.spriteHeight = 252;
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -7462,8 +7451,8 @@ const screens = {
                             if (this.checkBlocks()) {
                                 this.state = 'normal';
                                 activeScreen.game_running = true;
-                            } 
-                            
+                            }
+
                             else { alert("Não coloque dois blocos de repetição entrelaçados!\nColoque o bloco de abertura e de fechamento na mesma região"); }
                         }
 
@@ -7494,7 +7483,7 @@ const screens = {
 
                             return res;
                         }
-                        
+
                         this.sprX = this.x;
                         this.sprY = this.y;
                         this.sprWidth = this.width;
@@ -7531,7 +7520,7 @@ const screens = {
 
                         this.placeInGrid = function() {
                             const grid = activeScreen.getObject("grid");
-                            
+
                             let num = 0;
                             Object.keys(grid.itens.all).forEach(key => {
                                 if (key.includes("forward") && key.length > this.name.length) num = Math.max(num, Number(key.split("-")[1]));
@@ -7539,17 +7528,17 @@ const screens = {
 
                             const objName = this.name + '-' + (num + 1);
                             const objPos = activeScreen.objPosition[this.name];
-                            
+
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, this.text, this.textColor, this.textAlign, this.textVerticalAlign, this.textPosition, this.font, this.fontSize, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "forward",
                                 index: Object.keys(grid.itens.all).length
@@ -7587,16 +7576,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -7630,7 +7619,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -7693,7 +7682,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -7742,13 +7731,13 @@ const screens = {
                             activeScreen.objects.splice(objPos, 0,
                                 new RenderObject(objName, "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, false, true, false, false, false, this.imageSrc, this.imageHoverSrc, this.hasImage)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key]++;
                             });
 
                             activeScreen.objPosition[objName] = objPos;
-                            
+
                             grid.itens.all[objName] = {
                                 type: "turn",
                                 index: Object.keys(grid.itens.all).length
@@ -7786,16 +7775,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -7815,7 +7804,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -7829,7 +7818,7 @@ const screens = {
                                                     aux[key] = pos;
                                                 }
                                             });
-                                            
+
                                             grid.itens.count--;
                                             grid.itens.all = aux;
                                         }
@@ -7891,7 +7880,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -7941,14 +7930,14 @@ const screens = {
                                 new RenderObject(objName + (num + 1), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, null, null, null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true),
                                 new RenderObject(objName + (num + 2), "block", null, null, null, null, this.borderRadius, this.fillColor, this.strokeColor, this.strokeWidth, "", "branco", null, null, null, null, 0, true, true, true, false, false, false, this.imageSrc, this.imageHoverSrc, true)
                             );
-                            
+
                             Object.keys(activeScreen.objPosition).forEach(key => {
                                 if (objPos <= activeScreen.objPosition[key]) activeScreen.objPosition[key] += 2;
                             });
 
                             activeScreen.objPosition[objName + (num + 1)] = objPos;
                             activeScreen.objPosition[objName + (num + 2)] = objPos + 1;
-                            
+
                             grid.itens.all[objName + (num + 1)] = {
                                 type: "loop",
                                 index: Object.keys(grid.itens.all).length
@@ -7975,7 +7964,7 @@ const screens = {
 
                                 this.renderAux = function() {
                                     const grid = activeScreen.getObject("grid");
-                                    
+
                                     try {
                                         if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
                                     }
@@ -8017,16 +8006,16 @@ const screens = {
                                     this.width = function() {
                                         return canvas.height * 0.1;
                                     };
-    
+
                                     this.height = function() {
                                         return this.width();
                                     };
-    
+
                                     this.x = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.x() + gridObj.padding.x() + this.width() * (gridObj.itens.all[this.name].index - gridObj.offset);
                                     };
-    
+
                                     this.y = function() {
                                         const gridObj = activeScreen.getObject('grid');
                                         return gridObj.padding.y() + gridObj.y();
@@ -8046,7 +8035,7 @@ const screens = {
                                         if (hasColision(this, grid)) {
                                             const pos = this.positionSwapCheck();
                                             if (pos !== null) this.changePosition(pos);
-                                            
+
                                             this.resetPosition();
                                         }
 
@@ -8127,7 +8116,7 @@ const screens = {
                                 this.onclick = function() {
                                     const grid = activeScreen.getObject("grid");
                                     if (grid.itens.all[this.name].index < grid.offset || grid.itens.all[this.name].index > grid.offset + grid.count - 1) return;
-                    
+
                                     if (this.loop_count < 10) this.loop_count++;
                                     else this.loop_count = 2;
 
@@ -8152,7 +8141,7 @@ const screens = {
 
                             if (this.hasBeenDraggable && !this.pressed) {
                                 if (hasColision(this, activeScreen.getObject("grid"))) this.placeInGrid();
-                                
+
                                 this.resetPosition();
                                 this.hasBeenDraggable = false;
                             }
@@ -8269,7 +8258,7 @@ const screens = {
                 };
 
                 level_frame.init();
-                
+
                 let blocks = [];
 
                 this.level.paths.forEach((line, index) => {
@@ -8317,7 +8306,7 @@ const screens = {
                                     };
 
                                     this.width = this.height;
-                                    
+
                                     this.sprX = this.x;
                                     this.sprY = this.y;
                                     this.sprWidth = this.width;
@@ -8400,7 +8389,7 @@ const screens = {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.x() + (tmp.width() - this.width()) / 2;
                                 }
-                                
+
                                 this.y = function() {
                                     const tmp = activeScreen.getObject("path_block-" + (activeScreen.level.lines * index + i));
                                     return tmp.y() + (tmp.height() - this.height()) / 2;
@@ -8532,7 +8521,7 @@ const screens = {
                                     y: 102
                                 }
                             },
-                            
+
                             width: 15,
                             height: 22,
                             offset: 1,
@@ -8550,7 +8539,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = [];
+                    this.itensBuffer = new Set();
 
                     this.movement = {
                         has: false,
@@ -8589,8 +8578,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
-                                    this.itensCollected++;
-                                    this.itensBuffer.push(i.name);
+                                    this.itensBuffer.add(i.name);
+                                    this.itensCollected = this.itensBuffer.length;
                                 }
                             }
 
@@ -8598,8 +8587,8 @@ const screens = {
                         }
 
                         if (this.changeState.ready) {
-                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x; 
-                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y; 
+                            this.spriteX = this.statesMap[this.changeState.new].coords[this.stateCord.direction].x;
+                            this.spriteY = this.statesMap[this.changeState.new].coords[this.stateCord.direction].y;
                             this.spriteWidth = this.statesMap[this.changeState.new].width;
                             this.spriteHeight = this.statesMap[this.changeState.new].height;
                             this.stateCord.x = Math.round(this.stateCord.x);
@@ -8620,7 +8609,7 @@ const screens = {
                                 this.spriteX += this.spriteWidth + this.statesMap[this.animState].offset;
                                 this.currentFrame++;
                             }
-                        
+
                             if (this.movement.has) this.movement.fun();
                             else
                                 switch (this.animState) {
@@ -8634,13 +8623,13 @@ const screens = {
                                                 if (this.stateCord.y > 1) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 2)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
                                                             player.stateCord.y -= 1 / (60 / player.statesMap[player.animState].vel); }
                                                         this.stateCord.y -= 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
                                                 }
-                                                
+
                                                 break;
                                             }
 
@@ -8648,9 +8637,9 @@ const screens = {
                                                 if (this.stateCord.x < activeScreen.level.columns) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y - 1)].charAt(Math.round(this.stateCord.x)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.x += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.x += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -8662,9 +8651,9 @@ const screens = {
                                                 if (this.stateCord.y < activeScreen.level.lines) {
                                                     if (activeScreen.level.paths[Math.round(this.stateCord.y)].charAt(Math.round(this.stateCord.x - 1)) == '#') {
                                                         this.movement.has = true;
-                                                        this.movement.fun = function() { 
+                                                        this.movement.fun = function() {
                                                             const player = activeScreen.getObject('player');
-                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel); 
+                                                            player.stateCord.y += 1 / (60 / player.statesMap[player.animState].vel);
                                                         }
                                                         this.stateCord.y += 1 / (60 / this.statesMap[this.animState].vel);
                                                     }
@@ -8686,7 +8675,7 @@ const screens = {
                                                 break;
                                             }
                                         }
-                                        
+
                                         break;
                                     }
                                 }
@@ -8714,7 +8703,7 @@ const screens = {
             destroyObject(name) {
                 const pos = this.objPosition[name];
                 const aux = [];
-                
+
                 this.objects.forEach((obj, index) => {
                     if (index != pos) aux.push(obj);
                 });
@@ -8770,7 +8759,7 @@ const screens = {
                                     new: 'walk',
                                     ready: true
                                 }
-                                
+
                                 break;
                             }
 
@@ -8833,7 +8822,7 @@ const screens = {
                     player.itensBuffer.forEach(item => {
                         this.getObject(item).active = true;
                     });
-                    
+
                     player.itensBuffer = [];
 
                     if (player.itensCollected == activeScreen.level.quantItens) {
@@ -8871,7 +8860,7 @@ const screens = {
                 this.onload = false;
             }
         },
-        
+
         background: {
             image: new Image(),
             imageSrc: "./assets/image/background.png",
