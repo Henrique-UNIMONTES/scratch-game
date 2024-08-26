@@ -1,7 +1,7 @@
 const devicePixelRatio = window.devicePixelRatio || 1;
 let [windowWidth, windowHeight] = [
-    window.innerWidth * devicePixelRatio,
-    window.innerHeight * devicePixelRatio,
+    window.innerWidth / devicePixelRatio,
+    window.innerHeight / devicePixelRatio,
 ];
 
 const [ canvas, ctx ] = initCanvas(undefined, windowWidth, windowHeight);
@@ -373,8 +373,8 @@ function hasColision(obj1, obj2) {
 
 function resizeViewPort(e) {
     [windowWidth, windowHeight] = [
-        window.innerWidth * devicePixelRatio,
-        window.innerHeight * devicePixelRatio,
+        window.innerWidth / devicePixelRatio,
+        window.innerHeight / devicePixelRatio,
     ];
 
     ctx.scale(devicePixelRatio, devicePixelRatio);
