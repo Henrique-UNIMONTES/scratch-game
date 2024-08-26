@@ -377,6 +377,8 @@ function resizeViewPort(e) {
         window.innerHeight * devicePixelRatio,
     ];
 
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
     canvas.width = windowWidth;
     canvas.height = windowHeight;
 
@@ -533,7 +535,7 @@ const screens = {
         update() {
             if (this.onload) {
                 this.objects.push(
-                    new RenderObject("title", "interface", null, null, null, null, null, null, null, 0, "UniVerse", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.title.font, fonts.title.size, false, false, false, false, false, true),
+                    new RenderObject("title", "interface", null, null, null, null, null, null, null, 0, "UNIOPEN", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.title.font, fonts.title.size, false, false, false, false, false, true),
                     new RenderObject("sub_title", "interface", null, null, null, null, null, null, null, 0, "LOGICA DE PROGRAMACAO", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.sub_title.font, fonts.sub_title.size, false, false, false, false, false, true),
                     new RenderObject("uni_logo", "interface", null, null, null, null, null, null, null, 0, null, null, null, null, null, null, null, false, false, false, false, false, false, "./assets/image/unimontes.png", null, true),
                     new RenderObject("play_button", "interface", null, null, null, null, null, null, null, 0, "JOGAR", "branco", textAlign.horizontal.center, textAlign.vertical.center, "center", fonts.text.font, fonts.text.size, false, true, true, false, false, true, "./assets/image/menu/play_button.png", "./assets/image/menu/play_button-hover.png", true),
@@ -2236,7 +2238,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = new Set();
+                    this.itensBuffer = [];
 
                     this.movement = {
                         has: false,
@@ -2268,8 +2270,8 @@ const screens = {
 
                                 const i = activeScreen.getObject("item-" + (numY * activeScreen.level.columns + numX));
                                 i.active = false;
-                                this.itensBuffer.add(i.name);
-                                this.itensCollected = this.itensBuffer.length;
+                                this.itensCollected++;
+                                this.itensBuffer.push(i.name);
                             }
 
                             catch { }
@@ -3803,7 +3805,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = new Set();
+                    this.itensBuffer = [];
 
                     this.movement = {
                         has: false,
@@ -3835,8 +3837,8 @@ const screens = {
 
                                 const i = activeScreen.getObject("item-" + (numY * activeScreen.level.columns + numX));
                                 i.active = false;
-                                this.itensBuffer.add(i.name);
-                                this.itensCollected =  this.itensBuffer.length;
+                                this.itensCollected++;
+                                this.itensBuffer.push(i.name);
                             }
 
                             catch { }
@@ -5375,7 +5377,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = new Set();
+                    this.itensBuffer = [];
 
                     this.movement = {
                         has: false,
@@ -5414,8 +5416,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
-                                    this.itensBuffer.add(i.name);
-                                    this.itensCollected = this.itensBuffer.length;
+                                    this.itensCollected++;
+                                    this.itensBuffer.push(i.name);
                                 }
                             }
 
@@ -6957,7 +6959,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = new Set();
+                    this.itensBuffer = [];
 
                     this.movement = {
                         has: false,
@@ -6996,8 +6998,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
+                                    this.itensCollected++;
                                     this.itensBuffer.push(i.name);
-                                    this.itensCollected = this.itensBuffer.length;
                                 }
                             }
 
@@ -8539,7 +8541,7 @@ const screens = {
                     this.spriteWidth = 0;
                     this.spriteHeight = 0;
 
-                    this.itensBuffer = new Set();
+                    this.itensBuffer = [];
 
                     this.movement = {
                         has: false,
@@ -8578,8 +8580,8 @@ const screens = {
 
                                 if (push) {
                                     i.active = false;
-                                    this.itensBuffer.add(i.name);
-                                    this.itensCollected = this.itensBuffer.length;
+                                    this.itensCollected++;
+                                    this.itensBuffer.push(i.name);
                                 }
                             }
 
